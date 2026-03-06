@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Collection: movies
+    match /movies/{movieId} {
+      
+      // ใครก็ได้สามารถ "อ่าน" ข้อมูลหนังได้ (สำหรับหน้าเว็บหลัก)
+      allow read: if true;
+      
+      // เฉพาะผู้ที่ "ล็อกอินแล้ว" เท่านั้น ที่สามารถ "เขียน" (สร้าง, แก้ไข, ลบ) ข้อมูลได้
+      allow write: if request.auth != null;
+    }
+  }
+}
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    // Function to check if a user is an admin
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+  
+    match /movies/{movie} {
+      // 1. อนุญาตให้ทุกคนอ่านข้อมูลได้
+      allow read: if true;
+
+      // 2. อนุญาตให้เฉพาะ Admin สร้างหรือลบข้อมูลได้
+      allow create, delete: if isAdmin();
+
+      // 3. กฎสำหรับการแก้ไข (Update)
+      allow update: if 
+        // 3.1 กรณีเป็น Admin: แก้ไขได้ทุกอย่าง
+        isAdmin()
+        ||
+        // 3.2 กรณีเป็น User ทั่วไป: อนุญาตให้อัปเดตเฉพาะยอดวิว (viewCount) เท่านั้น
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewCount']) &&
+          request.resource.data.viewCount == resource.data.viewCount + 1
+        );    // Collection: comments
+    match /comments/{commentId} {
+      // Allow anyone to read comments
+      allow read: if true;
+      
+      // Allow authenticated users to create comments
+      allow create: if request.auth != null;
+      
+      // Allow users to delete their own comments or Admins to delete any comment
+      allow delete: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+    }
+
+    }
+    
+    // Secure the admins collection itself
+    match /admins/{userId} {
+    	// Only other admins can see who is an admin or change admin roles
+    	allow read, write: if isAdmin();
+    }
+  }
+}

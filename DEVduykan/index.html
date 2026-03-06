@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DUYDODEE 4K - ดูซีรีส์ออนไลน์ 24 ชม.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+
+<body class="min-h-screen pb-20">
+
+    <nav class="sticky top-0 z-[60] glass px-6 py-4 flex justify-between items-center">
+        <a href="/" class="block">
+            <img src="assets/img/logo.png" alt="DUYDODEE 4K Logo" class="h-8"> <!-- แก้ไขโลโก้ตรงนี้ -->
+        </a>
+        <div class="relative w-1/2 max-w-md hidden md:block">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-slate-500"></i>
+            <input type="text" id="search" oninput="handleSearch()" placeholder="ค้นหาชื่อเรื่อง..."
+                class="w-full bg-slate-900 border border-slate-700 rounded-2xl py-2 pl-12 pr-4 focus:outline-none focus:border-red-500 transition">
+        </div>
+        <a href="/admin/login" target="_blank" class="text-slate-500 hover:text-white transition"><i
+                class="fa-solid fa-user-shield"></i></a>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 pt-10">
+        <div class="flex gap-2 mb-10 overflow-x-auto pb-2">
+            <button data-category="all"
+                class="cat-btn active-cat px-6 py-2 rounded-xl text-sm font-bold transition">ทั้งหมด</button>
+            <button data-category="china"
+                class="cat-btn bg-slate-900 px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition">ซีรีส์จีน</button>
+            <button data-category="inter"
+                class="cat-btn bg-slate-900 px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition">พากย์ไทย/ฝรั่ง</button>
+            <button data-category="anime"
+                class="cat-btn bg-slate-900 px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition">อนิเมะ</button>
+        </div>
+
+        <div id="movieGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6"></div>
+    </main>
+
+    <div id="modal" class="fixed inset-0 z-[100] bg-black/98 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="mTitle" class="text-xl font-bold"></h2>
+                <button id="closeModalBtn" class="text-slate-400 text-3xl">&times;</button>
+            </div>
+            <div class="aspect-[21/9] bg-black rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(220,38,38,0.2)]">
+                <iframe id="player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="assets/js/index-logic.js"></script>
+</body>
+
+</html>
