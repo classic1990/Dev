@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>DUYDODEE 4K - ดูซีรีส์ออนไลน์ 24 ชม.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #020617; color: #e2e8f0; }
+        .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .active-cat { background: #dc2626 !important; color: white !important; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4); }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <nav class="sticky top-0 z-[60] glass px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-black text-red-600 tracking-tighter">DUYDODEE <span class="text-white font-light">4K</span></div>
+        <div class="relative w-1/2 max-w-md hidden md:block">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-slate-500"></i>
+            <input type="text" id="search" oninput="handleSearch()" placeholder="ค้นหาชื่อเรื่อง..." 
+                class="w-full bg-slate-900 border border-slate-700 rounded-2xl py-2 pl-12 pr-4 focus:outline-none focus:border-red-500 transition">
+        </div>
+        <a href="admin.html" class="text-slate-500 hover:text-white transition"><i class="fa-solid fa-user-shield"></i></a>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 pt-10">
+        <div class="flex gap-2 mb-10 overflow-x-auto pb-2">
+            <button data-category="all" class="cat-btn active-cat px-6 py-2 rounded-xl text-sm font-bold transition">ทั้งหมด</button>
+            <button data-category="china" class="cat-btn bg-slate-900 px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition">ซีรีส์จีน</button>
+            <button data-category="inter" class="cat-btn bg-slate-900 px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition">พากย์ไทย/ฝรั่ง</button>
+            <button data-category="anime" class="cat-btn bg-slate-900 px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition">อนิเมะ</button>
+        </div>
+
+        <div id="movieGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6"></div>
+    </main>
+
+    <div id="modal" class="fixed inset-0 z-[100] bg-black/98 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="mTitle" class="text-xl font-bold"></h2>
+                <button id="closeModalBtn" class="text-slate-400 text-3xl">&times;</button>
+            </div>
+            <div class="aspect-[21/9] bg-black rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(220,38,38,0.2)]">
+                <iframe id="player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, query, orderBy, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
+        let movies = [];
+
+        async function load() {
+            const snap = await getDocs(query(collection(db, 'movies'), orderBy('createdAt', 'desc')));
+            movies = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            display(movies);
+        }
+
+        function display(data) {
+            document.getElementById('movieGrid').innerHTML = data.map(m => `
+                <div class="group cursor-pointer movie-item" data-id="${m.id}" data-ytid="${m.ytId}" data-title="${m.title}">
+                    <div class="relative aspect-[2/3] rounded-2xl overflow-hidden mb-2 border border-slate-800 group-hover:border-red-600 transition">
+                        <img src="${m.posterUrl}" class="w-full h-full object-cover transition duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-play text-3xl text-red-600"></i></div>
+                    </div>
+                    <p class="text-sm font-bold truncate">${m.title}</p>
+                    <p class="text-[10px] text-slate-500 uppercase">${m.category} • <i class="fa-solid fa-eye"></i> ${m.viewCount || 0}</p>
+                </div>
+            `).join('');
+        }
+
+        async function openP(dbId, ytId, t) {
+            document.getElementById('mTitle').innerText = t;
+            document.getElementById('player').src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+            document.getElementById('modal').classList.remove('hidden');
+            // อัปเดตยอดวิวใน Firestore
+            await updateDoc(doc(db, 'movies', dbId), { viewCount: increment(1) });
+        }
+
+        function closeP() {
+            document.getElementById('player').src = "";
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function filterCat(category, clickedButton) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            clickedButton.classList.add('active-cat', 'bg-red-600');
+            display(category === 'all' ? movies : movies.filter(m => m.category === category));
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            load();
+
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => filterCat(e.currentTarget.dataset.category, e.currentTarget));
+            });
+
+            document.getElementById('movieGrid').addEventListener('click', (e) => {
+                const item = e.target.closest('.movie-item');
+                if (item) {
+                    openP(item.dataset.id, item.dataset.ytid, item.dataset.title);
+                }
+            });
+
+            document.getElementById('closeModalBtn').addEventListener('click', closeP);
+        });
+
+        document.getElementById('search').addEventListener('input', () => {
+            const t = document.getElementById('search').value.toLowerCase();
+            display(movies.filter(m => m.title.toLowerCase().includes(t)));
+        });
+    </script>
+</body>
+</html>
