@@ -1,0 +1,18 @@
+{
+  "name": "monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {"build": "vite build", "preview": "vite preview",
+    "web": "npm run dev --prefix apps/web",
+    "api": "npm run dev --prefix apps/api",
+    "pb": "npm run dev --prefix apps/pocketbase",
+    "dev": "concurrently \"npm:web\" \"npm:api\" \"npm:pb\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
