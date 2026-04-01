@@ -1,0 +1,16 @@
+===============================================
+DUY-DOE FILM DEPLOYMENT REPORT
+===============================================
+Deployment Date: 04/01/2026 05:13:53
+Environment: production
+Project: DUY-DOE FILM
+Firebase Project: duydodeesport
+Production URL: https://duydodeesport.web.app
+Local Port: 5000
+
+Files Deployed:
+  - D:\DEV\/add-movie.html   - D:\DEV\/backend-start.html   - D:\DEV\/database-status.html   - D:\DEV\/database-test.html   - D:\DEV\/index.html   - D:\DEV\/manifest.json   - D:\DEV\/watch.html   - D:\DEV\/assets\css\style-unified.css   - D:\DEV\/assets\js\add-movie.js   - D:\DEV\/assets\js\main.js   - D:\DEV\/assets\js\watch-enhanced.js   - D:\DEV\/assets\js\watch.js   - D:\DEV\/assets\js\core\constants.js   - D:\DEV\/assets\js\core\error-handler.js   - D:\DEV\/assets\js\core\firebase-config.js   - D:\DEV\/assets\js\core\movie-ai-fetcher.js   - D:\DEV\/assets\js\core\security.js   - D:\DEV\/assets\js\core\utils.js   - D:\DEV\/img\default-avatar.png
+
+Deployment Status: SUCCESS
+
+===============================================

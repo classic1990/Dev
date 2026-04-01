@@ -1,0 +1,101 @@
+{
+  "name": "duy-doe-film",
+  "version": "1.2.1",
+  "description": "DUY-DOE FILM - ดูหนังออนไลน์ 4K คุณภาพ พร้อมเทคโนโลยี สุดมัน",
+  "main": "public/assets/js/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "firebase serve --only hosting --port 5000",
+    "serve": "firebase serve --only hosting",
+    "emulate": "firebase emulators:start",
+    "deploy": "firebase deploy",
+    "clean": "firebase hosting:clear",
+    "logs": "firebase hosting:log",
+    "lint": "eslint 'public/assets/js/**/*.js'",
+    "lint:fix": "eslint 'public/assets/js/**/*.js' --fix",
+    "format": "prettier --write 'public/assets/js/**/*.js'",
+    "build": "echo 'Static site - no build required'",
+    "test": "echo 'No tests specified'",
+    "setup": "npm install && npm run install-global",
+    "install-global": "npm install -g firebase-tools",
+    "clean:deps": "npm run clean:node && npm install",
+    "clean:node": "rimraf node_modules package-lock.json",
+    "check:deps": "npm ls",
+    "audit:fix": "npm audit fix",
+    "security:check": "npm audit",
+    "optimize": "echo 'Optimization tools not installed - run npm install clean-css-cli terser'",
+    "optimize:css": "echo 'Run: npm install clean-css-cli && cleancss --output dist/style.min.css public/assets/css/style-unified.css'",
+    "optimize:js": "echo 'Run: npm install terser && terser public/assets/js/main.js --output dist/main.min.js'"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "firebase-tools": "^15.12.0",
+    "globals": "^17.4.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5"
+  },
+  "keywords": [
+    "movie",
+    "streaming",
+    "thai",
+    "netflix",
+    "disney",
+    "4k",
+    "hd",
+    "film",
+    "cinema",
+    "firebase",
+    "static-site"
+  ],
+  "author": "DUY-DOE FILM",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duydoe/film"
+  },
+  "homepage": "https://duydodeesport.web.app",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "eslintConfig": {
+    "extends": [
+      "@eslint/js/recommended"
+    ],
+    "env": {
+      "browser": true,
+      "es2022": true,
+      "node": true
+    },
+    "globals": {
+      "window": "readonly",
+      "document": "readonly",
+      "console": "readonly",
+      "firebase": "readonly",
+      "alert": "readonly"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "warn",
+      "prefer-const": "error",
+      "no-var": "error"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 2
+  }
+}
